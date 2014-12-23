@@ -726,7 +726,7 @@ public class Emitter implements Visitor {
         //TBD: your code goes here...
 		if(D.isGlobal())
 		{
-			emitStaticVariableReference(x.ldent, typdOfDecl(x.ldent.declAST), true);
+			emitStaticVariableReference(x.Ident, typeOfDecl(x.Ident.declAST), true);
 		} else {
 			if(T.Tequal(StdEnvironment.intType)
 				|| T.Tequal(StdEnvironment.boolType)) {
@@ -935,7 +935,7 @@ public class Emitter implements Visitor {
         //              iconst_0
         //           Label2:
         //TBD:
-		if(Op.equals("+") {
+		if(Op.equals("+")) {
 			
 		} else if(Op.equals("-")) {
 			if(x.eAST.type.Tequal(StdEnvironment.intType)) {
@@ -947,7 +947,7 @@ public class Emitter implements Visitor {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
 		
-			emit(JVM.iFNE + " Label" + L1);
+			emit(JVM.IFNE + " Label" + L1);
 			emit(JVM.ICONST_1);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
