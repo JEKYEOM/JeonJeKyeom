@@ -953,6 +953,8 @@ public class Emitter implements Visitor {
 			emitLabel(L1);
 			emit(JVM.ICONST_0);
 			emitLabel(L2);
+		} else if(Op.equals("i2f")) {
+			emit(JVM.I2F);
 		}
 
     }
