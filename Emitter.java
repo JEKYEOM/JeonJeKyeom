@@ -519,7 +519,7 @@ public class Emitter implements Visitor {
         //TBD: here you need to allocate a new local variable index to the
         //     formal parameter.
         //     Relevant: x.index, frame.getNewLocalVarIndex();
-durl1
+		x.index = frame.getNewLocalVarIndex();
     }
 
     public void visit(FormalParamDeclSequence x) {
@@ -684,7 +684,7 @@ durl1
 	
 		if(!(x.isGlobal()))
 		{
-			frame.getNewLocalVarIndex();
+			x.index = frame.getNewLocalVarIndex();
 		}
     }
 
@@ -990,13 +990,13 @@ durl1
         }
         x.paramAST.accept(this);
         if(isStaticMethod(F)) {
-	    emit(JVM.INVOKESTATIC + " lang/System/" +
-                 x.idAST.Lexeme + getDescriptor(F));
+			emit(JVM.INVOKESTATIC + " lang/System/" +
+            x.idAST.Lexeme + getDescriptor(F));
         } else {
-        //TBD: in case of an instance method, you need emit an JVM.INVOKEVIRTUAL instruction.
-        //     the name of the function consists of <ClassName>/<functionname><functiondescriptor>.
-        //      Relevant variables/functions: see above for static methods.
-
+			//TBD: in case of an instance method, you need emit an JVM.INVOKEVIRTUAL instruction.
+			//     the name of the function consists of <ClassName>/<functionname><functiondescriptor>.
+			//      Relevant variables/functions: see above for static methods.
+			emit(JVM.INVOKEVIRTUAL + " " + ClassName + "/" + x.idAST.Lexeme + getDescriptor(F));
         }
     }
 
@@ -1018,19 +1018,19 @@ durl1
     	//emit("; IntLiteral: " + x.Lexeme + "\n");
         //TBD: here you have to emit an ICONST instruction to load the integer literal
         //     onto the JVM stack. (see emitICONST).
-		x.GetValue();
+		emitICONST(Integer.parseInt(x.Lexeme));
     } 
 
     public void visit(FloatLiteral x) {
     	//emit("; FloatLiteral: " + x.Lexeme + "\n");
        //TBD: same for float
-
+		emitFCONST(Float.parseFloat(x.Lexeme));
     } 
 
     public void visit(BoolLiteral x) {
     	//emit("; BoolLiteral: " + x.Lexeme + "\n");
         //TBD: and bool...
-
+		emitBCONST((x.Lexeme).equals("true"));
     } 
 
     public void visit(StringLiteral x) {
