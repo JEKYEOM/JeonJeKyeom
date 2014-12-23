@@ -586,10 +586,10 @@ durl1
         int L1 = frame.getNewLabel();
         int L2 = frame.getNewLabel();
         //TBD: your code goes here...
-		emit("ifeq Label" + L1);
+		emit(JVM.IFEQ + " Label" + L1);
         x.thenAST.accept(this);
         //TBD: your code goes here...
-		emit("goto Label" + L2);
+		emit(JVM.GOTO + " Label" + L2);
 		emitLabel(L1);
         if(x.elseAST != null) {
             x.elseAST.accept(this);
@@ -608,10 +608,10 @@ durl1
 		emitLabel(L1);
 		x.eAST.accept(this);
 		
-		emit("ifeq Label" + L2);
+		emit(JVM.IFEQ + " Label" + L2);
 		
 		x.stmtAST.accept(this);
-		emit("goto Label" + L1);
+		emit(JVM.GOTO + " Label" + L1);
 		emitLabel(L2);
     }
 
@@ -629,7 +629,7 @@ durl1
 		emitLabel(L2);
 		if(!(x.e2AST instanceof EmptyExpr)) {
 		    x.e2AST.accept(this);
-			emit("ifeq Label" + L3);
+			emit(JVM.IFEQ + " Label" + L3);
 		}
 
 		x.stmtAST.accept(this);
@@ -638,7 +638,7 @@ durl1
 		    x.e3AST.accept(this);
 		}
 		
-		emit("goto Label" + L2);
+		emit(JVM.GOTO + " Label" + L2);
 		emitLabel(L3);
 		emitLabel(L1);
     }
@@ -797,11 +797,11 @@ durl1
             //     from the lecture slides.
 
 			x.lAST.accept(this);
-			emit("ifeq Label" + L1);
+			emit(JVM.IFEQ + " Label" + L1);
 			x.rAST.accept(this);
-			emit("ifeq Label" + L1);
+			emit(JVM.IFEQ + " Label" + L1);
 			emit(JVM.ICONST_1);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_0);
 			emitLabel(L2);
@@ -816,11 +816,11 @@ durl1
 			int L2 = frame.getNewLabel();
 			
 			x.lAST.accept(this);
-			emit("ifne Label" + L1);
+			emit(JVM.IFNE + " Label" + L1);
 			x.rAST.accept(this);
-			emit("ifne Label" + L1);
+			emit(JVM.IFNE + " Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);
@@ -864,7 +864,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPGT + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);
@@ -873,7 +873,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPGE + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);		
@@ -882,7 +882,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPLT + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);		
@@ -891,7 +891,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPLE + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);		
@@ -900,7 +900,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPEQ + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);
@@ -909,7 +909,7 @@ durl1
 			int L2 = frame.getNewLabel();
 			emit(JVM.IF_ICMPNE + "Label" + L1);
 			emit(JVM.ICONST_0);
-			emit("goto Label" + L2);
+			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
 			emit(JVM.ICONST_1);
 			emitLabel(L2);
@@ -945,8 +945,14 @@ durl1
 			}
 		} else if(Op.equals("!")) {
 			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
 		
-			emit(JVM.iFNE + "Label" + 
+			emit(JVM.iFNE + " Label" + L1);
+			emit(JVM.ICONST_1);
+			emit(JVM.GOTO + " Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_0);
+			emitLabel(L2);
 		}
 
     }
