@@ -34,6 +34,7 @@ public class Emitter implements Visitor {
            File f = new File(infile);
            namepart = f.getName(); // strip directory part
            int l = namepart.length();
+           
            if ( namepart.charAt(l-3) == '.'
                 && namepart.charAt(l-2) == 'm'
                 && namepart.charAt(l-1) == 'c') {
@@ -45,10 +46,11 @@ public class Emitter implements Visitor {
               outfile= new String(namepart);
               outfile = outfile.concat(".j");
            }
+           
            // Create output file: 
            fstream = new FileWriter(outfile);
            out = new BufferedWriter(fstream);
-	   indent = 0;
+           indent = 0;
        } catch (Exception e) {
             //Catch exception if any:
            System.err.println("Error: " + e.getMessage());
@@ -74,25 +76,25 @@ public class Emitter implements Visitor {
 
     // Emit a single string using indentation:
     private void emit (String s) {
-	try {
-	    for (int i = 1; i <= indent*INDENT_LEVEL; i++) {
-	       out.write(" ");
-	    }
-	    out.write(s + "\n");
-	} catch (Exception e) {
-	    System.err.println("Error: " + e.getMessage());
-	    System.exit(1);
-	}
+		try {
+		    for (int i = 1; i <= indent*INDENT_LEVEL; i++) {
+		       out.write(" ");
+		    }
+		    out.write(s + "\n");
+		} catch (Exception e) {
+		    System.err.println("Error: " + e.getMessage());
+		    System.exit(1);
+		}
     }
 
     // Emit a single string, but do not indent.
     private void emitNoIndent (String s) {
-	try {
-	    out.write(s + "\n");
-	} catch (Exception e) {
-	    System.err.println("Error: " + e.getMessage());
-	    System.exit(1);
-	}
+		try {
+		    out.write(s + "\n");
+		} catch (Exception e) {
+		    System.err.println("Error: " + e.getMessage());
+		    System.exit(1);
+		}
     }
 
     private void emit (String s, int value) {
@@ -106,110 +108,111 @@ public class Emitter implements Visitor {
     // For a given label nr, return the string representation
     // of that label:
     private String getLabelString(int label) {
-	return new String("Label" + label);
+    	return new String("Label" + label);
     }
 
     // Emit the defining occurrence of a label:
     private void emitLabel(int label) {
        assert(label >= 0);
        String Ind = new String(" ");
+
        for (int i = 1; i <= LabelIndent; i++) {
           Ind = Ind.concat(" ");
        }
-          emitNoIndent (Ind + "Label" + label + ":");
+       emitNoIndent (Ind + "Label" + label + ":");
     }
 
     // Emit an integer constant:
     private void emitICONST(int value) {
-      if(value == -1) {
-         emit(JVM.ICONST_M1);
-      } else if(value >= 0 && value <= 5) {
-         emit(JVM.ICONST + "_" + value);
-      } else if(value >= -128 && value <= 127) {
-         emit(JVM.BIPUSH, value);
-      } else if(value >= -32768 && value <= 32767) {
-         emit(JVM.SIPUSH, value);
-      } else {
-         emit(JVM.LDC, value);
-      }
+		if(value == -1) {
+			emit(JVM.ICONST_M1);
+		} else if(value >= 0 && value <= 5) {
+			emit(JVM.ICONST + "_" + value);
+		} else if(value >= -128 && value <= 127) {
+			emit(JVM.BIPUSH, value);
+		} else if(value >= -32768 && value <= 32767) {
+			emit(JVM.SIPUSH, value);
+		} else {
+			emit(JVM.LDC, value);
+		}
     }
 
     // Emit a floating point constant:
     private void emitFCONST(float value) {
-      if(value == 0.0) {
-         emit(JVM.FCONST_0);
-      } else if(value == 1.0) {
-         emit(JVM.FCONST_1);
-      } else if(value == 2.0) {
-         emit(JVM.FCONST_2);
-      } else {
-         emit(JVM.LDC, value);
-      }
+		if(value == 0.0) {
+			emit(JVM.FCONST_0);
+		} else if(value == 1.0) {
+			emit(JVM.FCONST_1);
+		} else if(value == 2.0) {
+			emit(JVM.FCONST_2);
+		} else {
+			emit(JVM.LDC, value);
+		}
     }
 
     // Emit a boolean constant:
     private void emitBCONST(boolean value) {
-      if(value) {
-         emit(JVM.ICONST_1); // true = 1 with the JVM
-      } else {
-         emit(JVM.ICONST_0);
-      }
+		if(value) {
+		     emit(JVM.ICONST_1); // true = 1 with the JVM
+		} else {
+		     emit(JVM.ICONST_0);
+		}
     }
 
     // Emit an integer load instruction:
     private void emitILOAD(int LocalVarIndex) {
-      if(LocalVarIndex == 0)
-         emit(JVM.ILOAD_0);
-      else if(LocalVarIndex == 1)
-         emit(JVM.ILOAD_1);
-      else if(LocalVarIndex == 2)
-         emit(JVM.ILOAD_2);
-      else if(LocalVarIndex == 3)
-         emit(JVM.ILOAD_3);
-      else
-         emit(JVM.ILOAD, LocalVarIndex);
+		if(LocalVarIndex == 0)
+		    emit(JVM.ILOAD_0);
+		else if(LocalVarIndex == 1)
+		    emit(JVM.ILOAD_1);
+		else if(LocalVarIndex == 2)
+		    emit(JVM.ILOAD_2);
+		else if(LocalVarIndex == 3)
+			emit(JVM.ILOAD_3);
+		else
+		    emit(JVM.ILOAD, LocalVarIndex);
     }
 
     // Emit an integer store instruction:
     private void emitISTORE(int LocalVarIndex) {
-      if(LocalVarIndex == 0)
-         emit(JVM.ISTORE_0);
-      else if(LocalVarIndex == 1)
-         emit(JVM.ISTORE_1);
-      else if(LocalVarIndex == 2)
-         emit(JVM.ISTORE_2);
-      else if(LocalVarIndex == 3)
-         emit(JVM.ISTORE_3);
-      else
-         emit(JVM.ISTORE, LocalVarIndex);
+		if(LocalVarIndex == 0)
+		     emit(JVM.ISTORE_0);
+		else if(LocalVarIndex == 1)
+		     emit(JVM.ISTORE_1);
+		else if(LocalVarIndex == 2)
+		     emit(JVM.ISTORE_2);
+		else if(LocalVarIndex == 3)
+		     emit(JVM.ISTORE_3);
+		else
+		     emit(JVM.ISTORE, LocalVarIndex);
     }
 
     // Emit a floating point load instruction:
     private void emitFLOAD(int LocalVarIndex) {
-      if(LocalVarIndex == 0)
-         emit(JVM.FLOAD_0);
-      else if(LocalVarIndex == 1)
-         emit(JVM.FLOAD_1);
-      else if(LocalVarIndex == 2)
-         emit(JVM.FLOAD_2);
-      else if(LocalVarIndex == 3)
-         emit(JVM.FLOAD_3);
-      else
-         emit(JVM.FLOAD, LocalVarIndex);
+		if(LocalVarIndex == 0)
+		     emit(JVM.FLOAD_0);
+		else if(LocalVarIndex == 1)
+		     emit(JVM.FLOAD_1);
+		else if(LocalVarIndex == 2)
+		     emit(JVM.FLOAD_2);
+		else if(LocalVarIndex == 3)
+		     emit(JVM.FLOAD_3);
+		else
+		     emit(JVM.FLOAD, LocalVarIndex);
     }
 
     // Emit a floating point store instruction:
     private void emitFSTORE(int LocalVarIndex) {
-      if(LocalVarIndex == 0)
-         emit(JVM.FSTORE_0);
-      else if(LocalVarIndex == 1)
-         emit(JVM.FSTORE_1);
-      else if(LocalVarIndex == 2)
-         emit(JVM.FSTORE_2);
-      else if(LocalVarIndex == 3)
-         emit(JVM.FSTORE_3);
-      else
-         emit(JVM.FSTORE, LocalVarIndex);
+		if(LocalVarIndex == 0)
+		     emit(JVM.FSTORE_0);
+		else if(LocalVarIndex == 1)
+		     emit(JVM.FSTORE_1);
+		else if(LocalVarIndex == 2)
+		     emit(JVM.FSTORE_2);
+		else if(LocalVarIndex == 3)
+		     emit(JVM.FSTORE_3);
+		else
+		     emit(JVM.FSTORE, LocalVarIndex);
     }
 
     // Emit a return statement of a given type:
@@ -217,12 +220,12 @@ public class Emitter implements Visitor {
         if (T.Tequal(StdEnvironment.intType)
             || T.Tequal(StdEnvironment.boolType))
 	    {
-		emit(JVM.IRETURN);
+        	emit(JVM.IRETURN);
 	    } else if(T.Tequal(StdEnvironment.floatType)) {
-	    emit(JVM.FRETURN);
-	} else if(T.Tequal(StdEnvironment.voidType)) {
-	    emit(JVM.RETURN);
-	}
+	    	emit(JVM.FRETURN);
+	    } else if(T.Tequal(StdEnvironment.voidType)) {
+	    	emit(JVM.RETURN);
+	    }
     }
 
     // Emit the constructor for the class of our MiniC program:
@@ -273,6 +276,7 @@ public class Emitter implements Visitor {
           VarDecl D = (VarDecl) d;
           assert (d.isGlobal());
           Type T= typeOfDecl (D);
+          
           if (T.Tequal(StdEnvironment.intType)
               || T.Tequal(StdEnvironment.boolType)) {
              emit(JVM.ICONST_0);
@@ -445,22 +449,22 @@ public class Emitter implements Visitor {
      */
 
     public void visit(Program x) {
-	emit("; Jassmin assembly code");
-	emit("; MiniC v. 1.0");
+    	emit("; Jassmin assembly code");
+    	emit("; MiniC v. 1.0");
         emit(".class public " + ClassName);
         emit(".super java/lang/Object");
-	//emit("; Program");
+        //emit("; Program");
         if(x.D instanceof VarDecl) {
           ((VarDecl) x.D).setGlobal();
         }
         emitStaticClassVariableDeclaration(x.D);
         emitClassInitializer(x.D);
         emitConstructor();
-	x.D.accept(this);
+        x.D.accept(this);
     }
 
     public void visit(EmptyDecl x) {
-	//emit("; EmptyDecl");
+    	//emit("; EmptyDecl");
     }
 
     public void visit(FunDecl x) {
@@ -479,29 +483,29 @@ public class Emitter implements Visitor {
            frame = new Frame(false);
            emit ("\n.method public " + x.idAST.Lexeme
                  + getDescriptor(x));
-	   x.paramsAST.accept(this); // process formal parameters to adjust the
+           x.paramsAST.accept(this); // process formal parameters to adjust the
                                      // local variable count.
         }
-	indent++;
+        indent++;
         int L0 = frame.getNewLabel();
         int L1 = frame.getNewLabel();
         emitLabel(L0);
-	if(isMain) {
+        if(isMain) {
            emit("new " + ClassName);
            emit("dup");
            emit("invokespecial " + ClassName + "/<init>()V");
            emit("astore_1");
-	}
+        }
         //x.tAST.accept(this);
-	//x.idAST.accept(this);
-	x.stmtAST.accept(this);
+        //x.idAST.accept(this);
+        x.stmtAST.accept(this);
         emitLabel(L1);
-	if(isMain) {
-          emit(JVM.RETURN);
-	}
+        if(isMain) {
+        	emit(JVM.RETURN);
+        }
         emit(".limit locals " + frame.getNewLocalVarIndex());
         emit(".limit stack " + MaxOperandStackSize);
-	indent--;
+        indent--;
         emit(".end method");
         GlobalScope = true;
     }
@@ -515,28 +519,28 @@ public class Emitter implements Visitor {
         //TBD: here you need to allocate a new local variable index to the
         //     formal parameter.
         //     Relevant: x.index, frame.getNewLocalVarIndex();
-
+durl1
     }
 
     public void visit(FormalParamDeclSequence x) {
-	//emit("; FormalParamDeclSequence");
-	x.lAST.accept(this);
-	x.rAST.accept(this);
+		//emit("; FormalParamDeclSequence");
+		x.lAST.accept(this);
+		x.rAST.accept(this);
     }
 
     public void visit(EmptyFormalParamDecl x) {
-	//emit("; EmptyFormalParamDecl");
+    	//emit("; EmptyFormalParamDecl");
     }
 
     public void visit(StmtSequence x) {
-	x.s1AST.accept(this);
-	x.s2AST.accept(this);
+		x.s1AST.accept(this);
+		x.s2AST.accept(this);
     }
 
     public void visit(AssignStmt x) {
-	emit("; AssignStmt, line " + x.pos.StartLine);
-	//x.lAST.accept(this);
-	x.rAST.accept(this);
+		emit("; AssignStmt, line " + x.pos.StartLine);
+		//x.lAST.accept(this);
+		x.rAST.accept(this);
         if (x.lAST instanceof VarExpr) {
            VarExpr V = (VarExpr) x.lAST;
            Decl D = (Decl) V.Ident.declAST; 
@@ -554,14 +558,25 @@ public class Emitter implements Visitor {
            //                         emitISTORE()
            //                         emitFSTORE()
            //
-
+		   if(D.isGlobal()) {
+				emitStaticVariableReference(V.Ident, typeOfDecl(V.Ident.declAST), true);
+		   } else {
+				if(T.Tequal(StdEnvironment.intType)
+					|| T.Tequal(StdEnvironment.boolType)) {
+					emitISTORE(D.index);
+				} else if(T.Tequal(StdEnvironment.floatType)) {
+					emitFSTORE(D.index);
+				} else {
+					assert(false);
+				}
+		   }
         } else {
            assert(false); // Arrays not implemented.
         }
     }
 
     public void visit(IfStmt x) {
-	emit("; IfStmt, line " + x.pos.StartLine);
+    	emit("; IfStmt, line " + x.pos.StartLine);
         // The following code evaluates the condition of the if statement.
         // After execution of this code, the stack will contain 0 if the condition
         // evaluated to false, and 1 if the condition evaluated to true.
@@ -571,69 +586,106 @@ public class Emitter implements Visitor {
         int L1 = frame.getNewLabel();
         int L2 = frame.getNewLabel();
         //TBD: your code goes here...
+		emit("ifeq Label" + L1);
         x.thenAST.accept(this);
         //TBD: your code goes here...
+		emit("goto Label" + L2);
+		emitLabel(L1);
         if(x.elseAST != null) {
             x.elseAST.accept(this);
         }
         //TBD: your code goes here...
-
+		emitLabel(L2);
     }
 
     public void visit(WhileStmt x) {
-	emit("; WhileStmt, line " + x.pos.StartLine);
+    	emit("; WhileStmt, line " + x.pos.StartLine);
         // You should apply the template for while loops from the lecture slides.
-        // TBD:
-
+        // TBD:		
+		int L1 = frame.getNewLabel();
+		int L2 = frame.getNewLabel();
+		
+		emitLabel(L1);
+		x.eAST.accept(this);
+		
+		emit("ifeq Label" + L2);
+		
+		x.stmtAST.accept(this);
+		emit("goto Label" + L1);
+		emitLabel(L2);
     }
 
     public void visit(ForStmt x) {
-	emit ("; ForStmt, line " + x.pos.StartLine);
+    	emit ("; ForStmt, line " + x.pos.StartLine);
         // No template was given for "for" loops, but you can find out by compiling a
         // Java "for" loop to bytecode, use "dejasmin" and look how it is done there.
         // TBD:
 
+		x.e1AST.accept(this);
+		int L1 = frame.getNewLabel();
+		int L2 = frame.getNewLabel();
+		int L3 = frame.getNewLabel();
+		
+		emitLabel(L2);
+		if(!(x.e2AST instanceof EmptyExpr)) {
+		    x.e2AST.accept(this);
+			emit("ifeq Label" + L3);
+		}
+
+		x.stmtAST.accept(this);
+		
+		if(!(x.e3AST instanceof EmptyExpr)) {
+		    x.e3AST.accept(this);
+		}
+		
+		emit("goto Label" + L2);
+		emitLabel(L3);
+		emitLabel(L1);
     }
 
     public void visit(ReturnStmt x) {
-	emit("; ReturnStmt, line " + x.pos.StartLine);
-        x.eAST.accept(this);
-        if(x.eAST instanceof EmptyExpr) {
-	    emitRETURN(StdEnvironment.voidType);
-	} else {
-	    emitRETURN(x.eAST.type);
-	}
+		emit("; ReturnStmt, line " + x.pos.StartLine);
+	        x.eAST.accept(this);
+	        if(x.eAST instanceof EmptyExpr) {
+		    emitRETURN(StdEnvironment.voidType);
+		} else {
+		    emitRETURN(x.eAST.type);
+		}
     }
 
     public void visit(CompoundStmt x) {
-	x.astDecl.accept(this);
-	x.astStmt.accept(this);
+		x.astDecl.accept(this);
+		x.astStmt.accept(this);
     }
 
     public void visit(EmptyStmt x) {
-	//emit("; EmptyStmt");
+    	//emit("; EmptyStmt");
     }
 
     public void visit(EmptyCompoundStmt x) {
-	//emit("; EmptyCompoundStmt");
+    	//emit("; EmptyCompoundStmt");
     }
 
     public void visit(CallStmt x) {
-	emit("; CallStmt, line " + x.pos.StartLine);
-	x.eAST.accept(this);
+		emit("; CallStmt, line " + x.pos.StartLine);
+		x.eAST.accept(this);
     }
 
     public void visit(VarDecl x) {
         x.tAST.accept(this);
         x.idAST.accept(this);
-	x.eAST.accept(this);
+        x.eAST.accept(this);
         //TBD: if this variable declaration declares a local variable, then
         //     you have to allocate a new local variable index from "frame"
         //     and assign it to x.index.
         //     Relevant functions:
         //                        isGlobal()
         //                        frame.getNewLocalVarIndex
-
+	
+		if(!(x.isGlobal()))
+		{
+			frame.getNewLocalVarIndex();
+		}
     }
 
     public void visit(DeclSequence x){
@@ -643,8 +695,8 @@ public class Emitter implements Visitor {
         if((x.D2 instanceof VarDecl) && GlobalScope) {
           ((VarDecl) x.D2).setGlobal();
         }
-	x.D1.accept(this);
-	x.D2.accept(this);
+        x.D1.accept(this);
+        x.D2.accept(this);
     }
 
     public void visit(VarExpr x) {
@@ -672,14 +724,26 @@ public class Emitter implements Visitor {
         Decl D = (Decl) x.Ident.declAST;
         Type T = typeOfDecl (D);
         //TBD: your code goes here...
-
+		if(D.isGlobal())
+		{
+			emitStaticVariableReference(x.ldent, typdOfDecl(x.ldent.declAST), true);
+		} else {
+			if(T.Tequal(StdEnvironment.intType)
+				|| T.Tequal(StdEnvironment.boolType)) {
+				emitILOAD(D.index);
+			} else if (T.Tequal(StdEnvironment.floatType)) {
+				emitFLOAD(D.index);
+			} else {
+				assert(false);
+			}
+		}
     }
 
     public void visit(AssignExpr x) {
-	emit("; AssignExpr");
-	//x.lAST.accept(this);
-	//x.rAST.accept(this);
-	x.rAST.accept(this);
+    	emit("; AssignExpr");
+		//x.lAST.accept(this);
+		//x.rAST.accept(this);
+		x.rAST.accept(this);
         if (x.lAST instanceof VarExpr) {
            VarExpr V = (VarExpr) x.lAST;
            Decl D = (Decl) V.Ident.declAST; 
@@ -702,29 +766,29 @@ public class Emitter implements Visitor {
     }
 
     public void visit(IntExpr x) {
-	x.astIL.accept(this);
+    	x.astIL.accept(this);
     }
 
     public void visit(FloatExpr x) {
-	x.astFL.accept(this);
+    	x.astFL.accept(this);
     }
 
     public void visit(BoolExpr x) {
-	x.astBL.accept(this);
+    	x.astBL.accept(this);
     }
 
     public void visit(StringExpr x) {
-	x.astSL.accept(this);
+    	x.astSL.accept(this);
     }
 
     public void visit(ArrayExpr x) {
-	emit("; ArrayExpr");
-	x.idAST.accept(this);
-	x.indexAST.accept(this);
+		emit("; ArrayExpr");
+		x.idAST.accept(this);
+		x.indexAST.accept(this);
     }
 
     public void visit(BinaryExpr x) {
-	//emit("; BinaryExpr");
+    	//emit("; BinaryExpr");
         String Op = new String(x.oAST.Lexeme);
         if(Op.equals("&&")) {
             int L1 = frame.getNewLabel();
@@ -732,12 +796,35 @@ public class Emitter implements Visitor {
             //TBD: implement the code template for && short circuit evaluation
             //     from the lecture slides.
 
+			x.lAST.accept(this);
+			emit("ifeq Label" + L1);
+			x.rAST.accept(this);
+			emit("ifeq Label" + L1);
+			emit(JVM.ICONST_1);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_0);
+			emitLabel(L2);
+			
             return;
         }
         if(Op.equals("||")) {
             //TBD: implement || short circuit evaluation.
             //     Similar to &&, you may use a Java example to figure it out..
 
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			
+			x.lAST.accept(this);
+			emit("ifne Label" + L1);
+			x.rAST.accept(this);
+			emit("ifne Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);
+			
             return;
         }
         /*
@@ -748,11 +835,91 @@ public class Emitter implements Visitor {
         x.lAST.accept(this);
         x.rAST.accept(this);
         //TBD:
-
+		if(Op.equals("+")) {
+			if(x.oAST.type.Tequal(StdEnvironment.intType)) {
+				emit(JVM.IADD);
+			} else {
+				emit(JVM.FADD);
+			}
+		} else if(Op.equals("-")) {
+			if(x.oAST.type.Tequal(StdEnvironment.intType)) {
+				emit(JVM.ISUB);
+			} else {
+				emit(JVM.FSUB);
+			}
+		} else if(Op.equals("*")) {
+			if(x.oAST.type.Tequal(StdEnvironment.intType)) {
+				emit(JVM.IMUL);
+			} else {
+				emit(JVM.FMUL);
+			}
+		} else if(Op.equals("/")) {
+			if(x.oAST.type.Tequal(StdEnvironment.intType)) {
+				emit(JVM.IDIV);
+			} else {
+				emit(JVM.FDIV);
+			}
+		} else if(Op.equals(">")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPGT + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);
+		} else if(Op.equals(">=")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPGE + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);		
+		} else if(Op.equals("<")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPLT + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);		
+		} else if(Op.equals("<=")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPLE + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);		
+		} else if(Op.equals("==")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPEQ + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);
+		} else if(Op.equals("!=")) {
+			int L1 = frame.getNewLabel();
+			int L2 = frame.getNewLabel();
+			emit(JVM.IF_ICMPNE + "Label" + L1);
+			emit(JVM.ICONST_0);
+			emit("goto Label" + L2);
+			emitLabel(L1);
+			emit(JVM.ICONST_1);
+			emitLabel(L2);
+		} else {
+			assert(false);
+		}
     }
 
     public void visit(UnaryExpr x) {
-	//emit("; UnaryExpr");
+    	//emit("; UnaryExpr");
         String Op = new String(x.oAST.Lexeme);
         x.eAST.accept(this);
         // Here we treat the following cases:
@@ -768,116 +935,129 @@ public class Emitter implements Visitor {
         //              iconst_0
         //           Label2:
         //TBD:
+		if(Op.equals("+") {
+			
+		} else if(Op.equals("-")) {
+			if(x.eAST.type.Tequal(StdEnvironment.intType)) {
+				emit(JVM.INEG);
+			} else {
+				emit(JVM.FNEG);
+			}
+		} else if(Op.equals("!")) {
+			int L1 = frame.getNewLabel();
+		
+			emit(JVM.iFNE + "Label" + 
+		}
 
     }
 
     public void visit(EmptyExpr x) {
-	// emit("; EmptyExpr");
+    	// emit("; EmptyExpr");
     }
 
     public void visit(ActualParam x) {
-	emit("; ActualParam");
-	x.pAST.accept(this);
+		emit("; ActualParam");
+		x.pAST.accept(this);
     }
 
     public void visit(EmptyActualParam x) {
-	// emit("; EmptyActualParam");
+    	// emit("; EmptyActualParam");
     }
 
     public void visit(ActualParamSequence x) {
-	// emit("; ActualParamSequence");
-	x.lAST.accept(this);
-	x.rAST.accept(this);
+		// emit("; ActualParamSequence");
+		x.lAST.accept(this);
+		x.rAST.accept(this);
     }
 
     public void visit(CallExpr x) {
         emit("; CallExpr");
-	//x.idAST.accept(this);
-	assert(x.idAST.declAST instanceof FunDecl);
-	FunDecl F = (FunDecl )x.idAST.declAST;
+		//x.idAST.accept(this);
+		assert(x.idAST.declAST instanceof FunDecl);
+		FunDecl F = (FunDecl )x.idAST.declAST;
         if(!isStaticMethod(F)) {
             emit("; \"this\"-pointer is the first ActualParam with instance methods:");
-	    if(isMain)
-	       emit(JVM.ALOAD_1);
-	    else
-	       emit(JVM.ALOAD_0);
-	}
-	x.paramAST.accept(this);
+		    if(isMain)
+		       emit(JVM.ALOAD_1);
+		    else
+		       emit(JVM.ALOAD_0);
+        }
+        x.paramAST.accept(this);
         if(isStaticMethod(F)) {
 	    emit(JVM.INVOKESTATIC + " lang/System/" +
                  x.idAST.Lexeme + getDescriptor(F));
-	} else {
+        } else {
         //TBD: in case of an instance method, you need emit an JVM.INVOKEVIRTUAL instruction.
         //     the name of the function consists of <ClassName>/<functionname><functiondescriptor>.
         //      Relevant variables/functions: see above for static methods.
 
-	}
+        }
     }
 
     public void visit(ExprSequence x) {
-	// emit("; ExprSequence");
-	x.lAST.accept(this);
-	x.rAST.accept(this);
+		// emit("; ExprSequence");
+		x.lAST.accept(this);
+		x.rAST.accept(this);
     }
 
     public void visit(ID x) {
-	// emit("; ID: " + x.Lexeme);
+    	// emit("; ID: " + x.Lexeme);
     }
 
     public void visit(Operator x) {
-	// emit("; Operator: " + x.Lexeme);
+    	// emit("; Operator: " + x.Lexeme);
     } 
 
     public void visit(IntLiteral x) {
-	//emit("; IntLiteral: " + x.Lexeme + "\n");
+    	//emit("; IntLiteral: " + x.Lexeme + "\n");
         //TBD: here you have to emit an ICONST instruction to load the integer literal
         //     onto the JVM stack. (see emitICONST).
-
+		x.GetValue();
     } 
 
     public void visit(FloatLiteral x) {
-	//emit("; FloatLiteral: " + x.Lexeme + "\n");
+    	//emit("; FloatLiteral: " + x.Lexeme + "\n");
        //TBD: same for float
 
     } 
 
     public void visit(BoolLiteral x) {
-	//emit("; BoolLiteral: " + x.Lexeme + "\n");
+    	//emit("; BoolLiteral: " + x.Lexeme + "\n");
         //TBD: and bool...
 
     } 
 
     public void visit(StringLiteral x) {
-	//emit("; StringLiteral: " + x.Lexeme);
-	emit(JVM.LDC + " \"" + x.Lexeme +"\"");
+    	//emit("; StringLiteral: " + x.Lexeme);
+    	emit(JVM.LDC + " \"" + x.Lexeme +"\"");
     } 
 
     public void visit(IntType x) {
-	//emit("; IntType");
+    	//emit("; IntType");
     }
 
     public void visit(FloatType x) {
-	//emit("; FloatType");
+    	//emit("; FloatType");
     }
 
     public void visit(BoolType x) {
-	//emit("; BoolType");
+    	//emit("; BoolType");
     }
 
     public void visit(StringType x) {
-	//emit("; StringType");
+    	//emit("; StringType");
     }
 
     public void visit(VoidType x) {
-	//emit("; VoidType");
+    	//emit("; VoidType");
     }
 
     public void visit(ArrayType x) {
-	//emit("; ArrayType");
+    	//emit("; ArrayType");
     }
 
     public void visit(ErrorType x) {
-	emit("; ErrorType");
+    	emit("; ErrorType");
         assert(false);
     }
 
