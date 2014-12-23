@@ -862,7 +862,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals(">")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPGT + "Label" + L1);
+			emit(JVM.IF_ICMPGT + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
@@ -871,7 +871,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals(">=")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPGE + "Label" + L1);
+			emit(JVM.IF_ICMPGE + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
@@ -880,7 +880,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals("<")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPLT + "Label" + L1);
+			emit(JVM.IF_ICMPLT + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
@@ -889,7 +889,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals("<=")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPLE + "Label" + L1);
+			emit(JVM.IF_ICMPLE + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
@@ -898,7 +898,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals("==")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPEQ + "Label" + L1);
+			emit(JVM.IF_ICMPEQ + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
@@ -907,7 +907,7 @@ public class Emitter implements Visitor {
 		} else if(Op.equals("!=")) {
 			int L1 = frame.getNewLabel();
 			int L2 = frame.getNewLabel();
-			emit(JVM.IF_ICMPNE + "Label" + L1);
+			emit(JVM.IF_ICMPNE + " Label" + L1);
 			emit(JVM.ICONST_0);
 			emit(JVM.GOTO + " Label" + L2);
 			emitLabel(L1);
